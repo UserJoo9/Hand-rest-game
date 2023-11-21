@@ -20,7 +20,8 @@ class SeaGame:
     if not os.path.exists('CONFIG.txt'):
         open('CONFIG.txt', 'w').write("Character speed: 100\n"
                                       "Obstacle speed: 5\n"
-                                      "Round time: 30\n")
+                                      "Round time: 30\n"
+                                      "Game name: Hand rest game")
     try:
         for i, v in enumerate(open("CONFIG.txt", "r").read().split("\n")):
             if i == 0:
@@ -29,16 +30,20 @@ class SeaGame:
                 obstacle_speed = float(v.split(": ")[1])
             if i == 2:
                 round_time = int(v.split(": ")[1])
+            if i == 3:
+                applicationName = v.split(": ")[1]
     except:
         if messagebox.askokcancel("Configuration error!", "Check invalid fields in 'CONFIG.txt' file!\n"
-                                                       "or click 'OK' to reset it.", icon='error'):
+                                                          "or click 'OK' to reset it.", icon='error'):
             open('CONFIG.txt', 'w').write("Character speed: 100\n"
-                                          "Obstacle speed: 1\n"
-                                          "Round time: 30\n")
+                                          "Obstacle speed: 5\n"
+                                          "Round time: 30\n"
+                                          "Game name: Hand rest game")
         else:
             exit()
 
     def __init__(self):
+        pygame.display.set_caption(self.applicationName)
         # the sea image
         self.the_sea = pygame.image.load(self.resource_path('sea.png'))
         self.the_sea_loc = self.the_sea.get_rect()
@@ -145,11 +150,11 @@ class SeaGame:
                 self.update_all_objects()
 
                 if self.kilp_pos == 'r':
-                    print(1, self.current_loc[0], self.the_kilp_loc[0] - 115, self.the_kilp_loc[1], self.current_loc[1] - 140)
+                    # print(1, self.current_loc[0], self.the_kilp_loc[0] - 115, self.the_kilp_loc[1], self.current_loc[1] - 140)
                     if self.current_loc[0] >= self.the_kilp_loc[0] - 115 and self.the_kilp_loc[1] >= self.current_loc[1] - 140:
                         self.you_lost()
                 else:
-                    print(2, self.current_loc[0], self.the_kilp_loc[0] + 240, self.the_kilp_loc[1], self.current_loc[1] - 140)
+                    # print(2, self.current_loc[0], self.the_kilp_loc[0] + 240, self.the_kilp_loc[1], self.current_loc[1] - 140)
                     if self.current_loc[0] <= self.the_kilp_loc[0] + 240 and self.the_kilp_loc[1] >= self.current_loc[1] - 140:
                         self.you_lost()
 
@@ -161,7 +166,6 @@ class SeaGame:
             pygame.time.delay(1000)
             if self.retry:
                 rt = self.round_time
-                self.retry = False
             else:
                 rt -= 1
         Thread(target=self.round2, daemon=True).start()
@@ -173,7 +177,6 @@ class SeaGame:
             pygame.time.delay(1000)
             if self.retry:
                 rt = self.round_time
-                self.retry = False
             else:
                 rt -= 1
         Thread(target=self.round3, daemon=True).start()
@@ -185,7 +188,6 @@ class SeaGame:
             pygame.time.delay(1000)
             if self.retry:
                 rt = self.round_time
-                self.retry = False
             else:
                 rt -= 1
         self.you_win()
@@ -242,6 +244,7 @@ class SeaGame:
             self.the_penguin_loc.center = 580, 1170
         pygame.display.update()
         pygame.time.delay(2000)
+        self.retry = False
 
     def you_win(self):
         self.new_round = True

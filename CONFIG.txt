@@ -1,3 +1,4 @@
 Character speed: 100
 Obstacle speed: 5
 Round time: 5
+Game name: Hand rest game
