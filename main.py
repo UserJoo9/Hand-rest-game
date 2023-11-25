@@ -217,27 +217,27 @@ class SeaGame:
                 for event in pygame.event.get():
                     if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                         self.running = False
-                    if (event.type == KEYDOWN and event.key == K_RIGHT) or any(num in general_value for num in [2, 4, 6]):
+                    if (event.type == KEYDOWN and event.key == K_RIGHT) or general_value != 0:
                         # print(self.the_fish_loc[0])
                         if self.round == 1 and general_value == 2:
                             if not self.the_fish_loc[0] > 112:
                                 self.the_fish_loc = self.the_fish_loc.move(135, 0)
-                        if self.round == 2 and general_value == 4:
+                        if self.round == 2 and general_value == 2:
                             if not self.the_shark_loc[0] > 142:
                                 self.the_shark_loc = self.the_shark_loc.move(135, 0)
-                        if self.round == 3 and general_value == 6:
+                        if self.round == 3 and general_value == 2:
                             if not self.the_penguin_loc[0] > 163:
                                 self.the_penguin_loc = self.the_penguin_loc.move(135, 0)
 
-                    if (event.type == KEYDOWN and event.key == K_LEFT) or any(num in general_value for num in [1, 3, 5]):
+                    if (event.type == KEYDOWN and event.key == K_LEFT) or general_value != 0:
                         # print(self.the_fish_loc[0])
                         if self.round == 1 and general_value == 1:
                             if not self.the_fish_loc[0] < 112:
                                 self.the_fish_loc = self.the_fish_loc.move(-135, 0)
-                        if self.round == 2 and general_value == 3:
+                        if self.round == 2 and general_value == 1:
                             if not self.the_shark_loc[0] < 142:
                                 self.the_shark_loc = self.the_shark_loc.move(-135, 0)
-                        if self.round == 3 and general_value == 5:
+                        if self.round == 3 and general_value == 1:
                             if not self.the_penguin_loc[0] < 163:
                                 self.the_penguin_loc = self.the_penguin_loc.move(-135, 0)
 
