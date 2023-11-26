@@ -1,0 +1,3 @@
+USB-SERIAL CH340
+Silicon Labs CP210x
+Arduino Uno

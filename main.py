@@ -21,6 +21,7 @@ except:
     exit()
 connectedBoard = None
 isConnected = False
+general_value = 0
 
 
 def start_connection():
@@ -38,6 +39,7 @@ def start_connection():
                 MCU.open()
             except:
                 pass
+            pygame.time.delay(6000)
             boardConnected = True
             return "Connected"
 
@@ -61,18 +63,19 @@ Thread(target=check_connectivity, daemon=True).start()
 
 # check live sensor value
 def active_press():
-    global stillPressed, MCU, general_value, controller_nav
+    global MCU, general_value
     while 1:
-        pygame.time.delay(50)
-        try:
-            general_value = int(MCU.read().decode().strip())
-        except:
-            if not isConnected:
-                try:
-                    MCU.close()
-                except:
-                    pass
-                start_connection()
+        pygame.time.delay(100)
+        rc = MCU.read().decode().strip()
+        if rc.isnumeric():
+            if int(rc) < 3:
+                general_value = int(rc)
+        if not isConnected:
+            try:
+                MCU.close()
+            except:
+                pass
+            start_connection()
 
 
 Thread(target=active_press, daemon=True).start()
@@ -217,35 +220,36 @@ class SeaGame:
                 for event in pygame.event.get():
                     if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                         self.running = False
-                    if (event.type == KEYDOWN and event.key == K_RIGHT) or general_value != 0:
-                        # print(self.the_fish_loc[0])
-                        if self.round == 1 and general_value == 2:
-                            if not self.the_fish_loc[0] > 112:
-                                self.the_fish_loc = self.the_fish_loc.move(135, 0)
-                        if self.round == 2 and general_value == 2:
-                            if not self.the_shark_loc[0] > 142:
-                                self.the_shark_loc = self.the_shark_loc.move(135, 0)
-                        if self.round == 3 and general_value == 2:
-                            if not self.the_penguin_loc[0] > 163:
-                                self.the_penguin_loc = self.the_penguin_loc.move(135, 0)
 
-                    if (event.type == KEYDOWN and event.key == K_LEFT) or general_value != 0:
-                        # print(self.the_fish_loc[0])
-                        if self.round == 1 and general_value == 1:
-                            if not self.the_fish_loc[0] < 112:
-                                self.the_fish_loc = self.the_fish_loc.move(-135, 0)
-                        if self.round == 2 and general_value == 1:
-                            if not self.the_shark_loc[0] < 142:
-                                self.the_shark_loc = self.the_shark_loc.move(-135, 0)
-                        if self.round == 3 and general_value == 1:
-                            if not self.the_penguin_loc[0] < 163:
-                                self.the_penguin_loc = self.the_penguin_loc.move(-135, 0)
+                if general_value == 1:
+                    # print(self.the_fish_loc[0])
+                    if self.round == 1 and general_value == 1:
+                        if not self.the_fish_loc[0] > 112:
+                            self.the_fish_loc = self.the_fish_loc.move(135, 0)
+                    if self.round == 2 and general_value == 1:
+                        if not self.the_shark_loc[0] > 142:
+                            self.the_shark_loc = self.the_shark_loc.move(135, 0)
+                    if self.round == 3 and general_value == 1:
+                        if not self.the_penguin_loc[0] > 163:
+                            self.the_penguin_loc = self.the_penguin_loc.move(135, 0)
 
-                    if (event.type == KEYDOWN and event.key == K_SPACE) or general_value == 0:
-                        self.the_fish_loc.center = 485, 1120
-                        self.the_shark_loc.center = 515, 1120
-                        self.the_penguin_loc.center = 535, 1180
-                        pygame.display.update()
+                if general_value == 2:
+                    # print(self.the_fish_loc[0])
+                    if self.round == 1 and general_value == 2:
+                        if not self.the_fish_loc[0] < 112:
+                            self.the_fish_loc = self.the_fish_loc.move(-135, 0)
+                    if self.round == 2 and general_value == 2:
+                        if not self.the_shark_loc[0] < 142:
+                            self.the_shark_loc = self.the_shark_loc.move(-135, 0)
+                    if self.round == 3 and general_value == 2:
+                        if not self.the_penguin_loc[0] < 163:
+                            self.the_penguin_loc = self.the_penguin_loc.move(-135, 0)
+
+                if general_value == 0:
+                    self.the_fish_loc.center = 485, 1120
+                    self.the_shark_loc.center = 515, 1120
+                    self.the_penguin_loc.center = 535, 1180
+                    pygame.display.update()
 
                 self.update_all_objects()
 
@@ -285,7 +289,6 @@ class SeaGame:
                         self.the_kilp3_loc.center = self.r_kilp_width, 100
 
     def round1(self):
-        MCU.write('a'.encode())
         self.active_new_round()
         rt = self.round_time
         while rt >= 1:
@@ -358,7 +361,7 @@ class SeaGame:
         self.round_text = pygame.font.Font(self.resource_path('alfont_com_AA-TYPO.otf'), 100).render(f"Round {self.round}", True, (0, 255, 0))
         self.screen.blit(self.round_text, self.round_text_loc)
         pygame.display.update()
-        pygame.time.delay(3000)
+        pygame.time.delay(4000)
         self.kilp_pos = 'r'
         self.the_kilp_loc.center = self.r_kilp_width, 100
         self.the_kilp2_loc.center = self.r_kilp_width, 100

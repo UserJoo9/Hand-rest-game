@@ -1,3 +1,3 @@
-Character speed: 3
-Round time: 60
+Character speed: 1
+Round time: 25
 Game name: Hand rest game
