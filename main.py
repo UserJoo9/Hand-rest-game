@@ -46,6 +46,19 @@ def start_connection():
 
 start_connection()
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+pygame.mixer.init()
+bg_sound = pygame.mixer.Sound(resource_path('bg_music.mp3'))
+bg_sound.set_volume(min(1.0, bg_sound.get_volume() / 20))
+
 
 def check_connectivity():
     global isConnected, MCU
@@ -215,6 +228,8 @@ class SeaGame:
 
     def mainloop(self):
         while self.running:
+            if not pygame.mixer.get_busy():
+                pygame.mixer.Channel(1).play(bg_sound)
             pygame.time.delay(10)
             if not self.new_round:
                 for event in pygame.event.get():
